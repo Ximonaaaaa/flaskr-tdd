@@ -1,11 +1,14 @@
 import os
 import json
+import tempfile
 import pytest
 from pathlib import Path
 
-from project.app import app, db
+_test_dir = tempfile.TemporaryDirectory(prefix="flaskr-tests-")
+TEST_DB = Path(_test_dir.name) / "test.db"
+os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DB}"
 
-TEST_DB = "test.db"
+from project.app import app, db
 
 
 @pytest.fixture
@@ -16,8 +19,10 @@ def client():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{BASE_DIR.joinpath(TEST_DB)}"
 
     with app.app_context():
+        assert db.engine.url.get_backend_name() == "sqlite"
         db.create_all()  # setup
         yield app.test_client()  # tests run here
+        db.session.remove()
         db.drop_all()  # teardown
 
 
