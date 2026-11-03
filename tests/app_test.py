@@ -52,6 +52,11 @@ def test_empty_db(client):
     assert b"No entries yet. Add some!" in rv.data
 
 
+def test_search(client):
+    response = client.get("/search/?query=hello")
+    assert response.status_code == 200
+
+
 def test_login_logout(client):
     """Test login and logout using helper functions"""
     rv = login(client, app.config["USERNAME"], app.config["PASSWORD"])

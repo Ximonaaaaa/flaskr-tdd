@@ -23,8 +23,6 @@ elif url.startswith("postgresql://"):
     url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
 SQLALCHEMY_DATABASE_URI = url
-
-SQLALCHEMY_DATABASE_URI = url
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
